@@ -19,6 +19,8 @@ if 'is_streaming' not in st.session_state:
 if 'api_response' not in st.session_state:
     st.session_state.api_response = None
 
+if 'input_request' not in st.session_state:
+    st.session_state.input_request = None
 
 # Streamlit app
 st.title("Analisis de datos: Real Estate :bar_chart: :nerd_face:")
@@ -103,6 +105,7 @@ if st.button(
         "lon": lon
     }
     st.session_state.api_response = make_request(input_request)
+    st.session_state.input_request = input_request
 
     # declare streaming states
     st.session_state.is_streaming = True
@@ -116,6 +119,7 @@ if st.session_state.is_streaming:
     # insert_data(city, business_type, property_type)    
     if st.session_state.api_response:
         api_response = st.session_state.api_response.copy()
+        input_request = st.session_state.input_request.copy()
 
         # Extracting data from the response
         ratio_used = api_response.get('ratio_used')
