@@ -1,9 +1,8 @@
-import os
 import requests
 import matplotlib.pyplot as plt
 import streamlit as st
 
-ENDPOINT = os.getenv("ENDPOINT_PRICES_NEIGHBORHOOD")
+ENDPOINT = st.secrets["ENDPOINT_PRICES_NEIGHBORHOOD"]
 
 def plot_bars_from_dict(count_dict: dict, feature: str):
     plt.figure()
