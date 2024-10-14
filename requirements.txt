@@ -1,0 +1,5 @@
+streamlit
+matplotlib
+folium
+streamlit-folium
+plotly
