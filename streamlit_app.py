@@ -239,25 +239,32 @@ if st.session_state.is_streaming:
                     neigh_data_refined = [
                         row for row in neigh_data_refined if row["bedrooms"]==num_bedrooms
                     ]
-                # precio medio por metro2
-                price_m2_refined = round(
-                    statistics.median([
-                        x["price_m2"] for x in neigh_data_refined
-                    ])
-                )
-                # precio medio full
-                price_full_refined = round(
-                    price_m2_refined * input_request["area_m2"]
-                )
-                col11, col21, col31 = st.columns(3)
-                col11.metric(label=f"Cant. a menos de {ratio_used}mts", value=len(neigh_data_refined))
-                col21.metric(label="Precio por m²", value=format_cop(price_m2_refined))
-                col31.metric(label="Total precio (precio m² x area)", value=format_cop(price_full_refined))
+                
+                if len(neigh_data_refined)>0:
+                    # precio medio por metro2
+                    price_m2_refined = round(
+                        statistics.median([
+                            x["price_m2"] for x in neigh_data_refined
+                        ])
+                    )
+                    # precio medio full
+                    price_full_refined = round(
+                        price_m2_refined * input_request["area_m2"]
+                    )
+                    col11, col21, col31 = st.columns(3)
+                    col11.metric(label=f"Cant. a menos de {ratio_used}mts", value=len(neigh_data_refined))
+                    col21.metric(label="Precio por m²", value=format_cop(price_m2_refined))
+                    col31.metric(label="Total precio (precio m² x area)", value=format_cop(price_full_refined))
+                else:
+                    st.markdown(
+                        f"No se encontraron publicaciones con las características ingresadas, "
+                        "por lo tanto no se pueden obtener resultados."
+                    )
                 st.markdown("---")
         else:
             st.markdown(
                 f"No se encontraron publicaciones a menos de {ratio_used}mts de la coordenada ingresada, "
-                "Por lo tanto no se pueden obtener resultados."
+                "por lo tanto no se pueden obtener resultados."
             )
 
 st.markdown(
