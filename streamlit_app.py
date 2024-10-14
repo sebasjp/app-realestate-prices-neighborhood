@@ -6,6 +6,7 @@ from utils import (
     plot_bars_from_dict,
     plot_dist_from_list
 )
+from unidecode import unidecode
 # Map to capture coordinates
 import folium as fl
 from streamlit_folium import st_folium
@@ -19,28 +20,52 @@ if 'is_streaming' not in st.session_state:
 # Streamlit app
 st.title("Analisis de datos: Real Estate :bar_chart: :nerd_face:")
 msg = (
-    "Esta herramienta tiene como objetivo facilitar el aprendizaje "
-    "de la debida diligencia, centrándose en el análisis cuantitativo "
-    "a través de tecnología y análisis de datos, lo que optimiza "
-    "la revisión del mercado. Se fundamenta en datos extraídos de "
-    "la página de anuncios https://www.fincaraiz.com.co/.\n\n"
-    "**La información aqui presentada es con fines academicos y no representa "
-    "ninguna recomendación ni publicidad**"
+    "Esta herramienta está diseñada para ayudar en el **aprendizaje "
+    "de la debida diligencia**, centrándose en el análisis cuantitativo de las rentas tradicionales. "
+    "El objetivo es facilitar la revisión del mercado en una zona de interés, utilizando datos extraídos en Oct/2024 "
+    "de alrededor de 30mil anuncios (entre casas y apartamentos en venta o arriendo) "
+    "de la página https://www.fincaraiz.com.co/.\n\n"
+
+    "**¿Cómo funciona?**\n\n"
+    "1. Debes tener un inmueble (**casa** o **apartamento**) que quieras revisar, "
+    "ya sea porque quieras invertir, "
+    "o quieras conocer el valor actual del precio por m2 medio de **arriendo** o **venta**.\n\n"
+    "2. Esta herramienta compara los inmuebles vecinos (cercanos) a la ubicación que le ingresas.\n\n"
+    "3. Calcula el precio medio, características de los inmuebles de la zona y se muestran "
+    "las publicaciones encontradas ordenadas por precio por m2.\n\n"
+
+    "**La información aqui presentada es con fines académicos y no representa "
+    "ninguna recomendación ni publicidad.**"
 )
 st.markdown(msg)
 
 # Input fields
 st.markdown("### Datos de entrada")
 st.markdown("Aquí se ingresan los datos del inmueble o zona que deseas evaluar.")
-city = st.selectbox("Ciudad :cityscape:", ["bogota", "medellin", "cali"], index=None)
-business_type = st.selectbox("Tipo de negocio :nerd_face:", ["arriendo", "venta"], index=None)
-property_type = st.selectbox("Tipo de propiedad :house_buildings:", ["apartamento", "casa"], index=None)
+city = st.selectbox("Ciudad :cityscape:", ["Bogotá", "Medellín", "Cali"], index=None)
+business_type = st.selectbox("Tipo de negocio :nerd_face:", ["Arriendo", "Venta"], index=None)
+property_type = st.selectbox("Tipo de propiedad :house_buildings:", ["Apartamento", "Casa"], index=None)
 area = st.number_input("Area (m2) :black_square_button:", value=None, placeholder=70.20, format="%.2f")
 
+if city:
+    city = unidecode(city).lower()
+if business_type:
+    business_type = business_type.lower()
+if property_type:
+    property_type = property_type.lower()
+
 # call to render Folium map in Streamlit
+if city=="bogota":
+    start_coords = [4.7109886, -74.072092]
+elif city=="medellin":
+    start_coords = [6.2476376, -75.5658153]
+elif city=="cali":
+    start_coords = [3.4516467, -76.5319854]
+else:
+    start_coords = [4.570868,-74.297333]
+
 st.write("Escoja el lugar de interes :world_map:")
-m = fl.Map(location=[4.570868,-74.297333], zoom_start=7)
-# m.add_child(fl.ClickForMarker("<b>Lat:</b> ${lat}<br /><b>Lon:</b> ${lng}"))
+m = fl.Map(location=start_coords, zoom_start=11)
 m.add_child(fl.LatLngPopup())
 map_data = st_folium(m, height=300, width=700)
 
@@ -60,14 +85,12 @@ if (city and business_type and property_type and area and lat and lon):
 else:
     disable_process = True
 
-if st.button("Procesar", use_container_width=True, disabled=disable_process):
-    st.session_state.is_streaming = True
-    st.session_state.is_streaming_refined = False
-
-st.markdown("---")
-
-if st.session_state.is_streaming:
-
+if st.button(
+    "Procesar", 
+    use_container_width=True, 
+    disabled=disable_process
+):
+    # Call API with input data
     input_request = {
         "city": city, 
         "business_type": business_type, 
@@ -76,11 +99,18 @@ if st.session_state.is_streaming:
         "lat": lat,
         "lon": lon
     }
-    # Insert data into PostgreSQL
-    # insert_data(city, business_type, property_type)
-
-    # Call API with input data
     api_response = make_request(input_request)
+
+    # declare streaming states
+    st.session_state.is_streaming = True
+    st.session_state.is_streaming_refined = False
+
+st.markdown("---")
+
+if st.session_state.is_streaming:
+
+    # Insert data into PostgreSQL
+    # insert_data(city, business_type, property_type)    
 
     if api_response:
         # Extracting data from the response
@@ -145,15 +175,6 @@ if st.session_state.is_streaming:
                 data_display,
                 column_config={"link": st.column_config.LinkColumn("URL")}
             )            
-            # map_results = fl.Map(location=[lat, lon], zoom_start=15)
-            # for row in neigh_data:
-            #     fl.CircleMarker(
-            #         location=[row["latitude"], row["longitude"]],
-            #         radius=2,
-            #         weight=5
-            #     ).add_to(map_results)
-            # st_folium(map_results, key="vecindario", height=300, width=350)
-        
             # ============= graficos ============= #
             st.markdown("### Caracteristicas de los inmuebles vecinos :toilet: :sleeping_accommodation:")
             
