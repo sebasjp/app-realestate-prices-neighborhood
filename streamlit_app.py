@@ -257,14 +257,14 @@ if st.session_state.is_streaming:
                     col31.metric(label="Total precio (precio m² x area)", value=format_cop(price_full_refined))
                 else:
                     st.markdown(
-                        f"No se encontraron publicaciones con las características ingresadas, "
-                        "por lo tanto no se pueden obtener resultados."
+                        f"**No se encontraron publicaciones con las características ingresadas, "
+                        "por lo tanto no se pueden obtener resultados.**"
                     )
                 st.markdown("---")
         else:
             st.markdown(
-                f"No se encontraron publicaciones a menos de {ratio_used}mts de la coordenada ingresada, "
-                "por lo tanto no se pueden obtener resultados."
+                f"**No se encontraron publicaciones a menos de {ratio_used}mts de la coordenada ingresada, "
+                "por lo tanto no se pueden obtener resultados.**"
             )
 
 st.markdown(
