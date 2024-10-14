@@ -94,7 +94,6 @@ if st.session_state.is_streaming:
             count_bathrooms_neigh = api_response.get("count_bathrooms_neigh")
             count_bedrooms_neigh = api_response.get("count_bedrooms_neigh")
             count_ant_neigh = api_response.get("count_ant_neigh")
-            count_ant_neigh = count_bathrooms_neigh
             neigh_data = api_response.get('neigh')
             dist_area_neigh = [row["m2"] for row in neigh_data]
             
@@ -237,4 +236,4 @@ st.markdown(
     ":point_right: Escalar con información de otras ciudades del país.\n\n"
     "---"
 )
-st.markdown(":link: Creditos: https://www.linkedin.com/in/sjimenezp/")
+st.markdown(":link: Elaborado por: https://www.linkedin.com/in/sjimenezp/")
