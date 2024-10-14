@@ -260,16 +260,12 @@ if st.session_state.is_streaming:
                         f"**No se encontraron publicaciones con las características ingresadas, "
                         "por lo tanto no se pueden obtener resultados.**"
                     )
-                st.markdown("---")
+                    st.markdown("---")
         else:
             st.markdown(
                 f"**No se encontraron publicaciones a menos de {ratio_used}mts de la coordenada ingresada, "
                 "por lo tanto no se pueden obtener resultados.**"
             )
+            st.markdown("---")
 
-st.markdown(
-    "#### TO DO:\n\n"
-    ":point_right: Escalar con información de otras ciudades del país.\n\n"
-    "---"
-)
 st.markdown(":link: Elaborado por: https://www.linkedin.com/in/sjimenezp/")
