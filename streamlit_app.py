@@ -115,8 +115,6 @@ st.markdown("---")
 
 if st.session_state.is_streaming:
 
-    # Insert data into PostgreSQL
-    # insert_data(city, business_type, property_type)    
     if st.session_state.api_response:
         api_response = st.session_state.api_response.copy()
         input_request = st.session_state.input_request.copy()
